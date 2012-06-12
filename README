@@ -1,0 +1,3 @@
+Current wisdom for storing passwords today seems to be that you should always use bcrypt.  The reason being that it allows you to specify the complexity of the hashing being doneso that if your database of passwords is compromised it would be computationally expensive to crack the passwords.  The issue with this is that, given a database filled with hashed passwords, increasing the complexity of bcrypted passwords is not possible.
+
+This library attempts to solve that problem allowing the same specification of the number of passes of sha256 hashed passwords (actually the log2 of the number of passes), and providing an easy way to take an existing hashed password and increasing the number of passes such that hash(hash(password,10), 20) == hash(password, 20).
