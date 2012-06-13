@@ -1,3 +1,12 @@
 Current wisdom for storing passwords today seems to be that you should always use bcrypt.  The reason being that it allows you to specify the complexity of the hashing being done so that if your database of passwords is compromised it would be computationally expensive to crack the passwords.  The issue with this is that, given a database filled with hashed passwords, increasing the complexity of bcrypted passwords is not possible.
 
 This library attempts to solve that problem allowing the same specification of the number of passes of sha256 hashed passwords (actually the log2 of the number of passes), and providing an easy way to take an existing hashed password and increasing the number of passes such that hash(hash(password,10), 20) == hash(password, 20).
+
+While this was an entertaining exercise, it shold not be used in production.  This algorithm is somewhat similar to [shacrypt][2], which I hadn't heard of previously, but is still not as good as bcrypt. Reason being that bcrypt, in addition to the work factor, also requires more memory to process than the sha2 family. This means that it cannot as effectively be parallelized in GPUs (although to some extent it can be, and more easily in an FPGA) while sha2 can (and easily).  As such, no matter how many passes of sha2 one does, it will still not be as effective as bcrypt.  
+
+[Scrypt][3] is significantly better still because it has both a work factor for CPU and a memory factor (and as such is essentially impossible to parallelize in a GPU or FPGA).  The only issue is that the nodejs library for scrypt could use a little love...
+
+
+  [1]: http://crypto.stackexchange.com/questions/2859/does-shacrypt-have-the-properties-which-make-bcrypt-slow-on-gpus
+  [2]: http://www.akkadia.org/drepper/SHA-crypt.txt
+  [3]: http://www.tarsnap.com/scrypt.html
